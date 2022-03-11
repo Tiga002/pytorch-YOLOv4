@@ -125,7 +125,7 @@ def main(engine_path, image_path, image_size):
 
         image_src = cv2.imread(image_path)
 
-        num_classes = 80
+        num_classes = 2
 
         for i in range(2):  # This 'for' loop is for speed check
                             # Because the first iteration is usually longer
@@ -136,7 +136,7 @@ def main(engine_path, image_path, image_size):
         elif num_classes == 80:
             namesfile = 'data/coco.names'
         else:
-            namesfile = 'data/names'
+            namesfile = 'cfg/obj.names'
 
         class_names = load_class_names(namesfile)
         plot_boxes_cv2(image_src, boxes[0], savename='predictions_trt.jpg', class_names=class_names)
@@ -144,9 +144,12 @@ def main(engine_path, image_path, image_size):
 
 def get_engine(engine_path):
     # If a serialized engine exists, use it instead of building an engine.
+    trt.init_libnvinfer_plugins(None, "") 
     print("Reading engine from file {}".format(engine_path))
     with open(engine_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
-        return runtime.deserialize_cuda_engine(f.read())
+        engine_data = f.read()
+    engine = runtime.deserialize_cuda_engine(engine_data)
+    return engine
 
 
 

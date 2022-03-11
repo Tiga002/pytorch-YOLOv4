@@ -6,6 +6,7 @@ ttest
 *.pyc
 *.infer
 *.npy
+*.trt
 
 z_demo_*
 
